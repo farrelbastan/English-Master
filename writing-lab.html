@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Writing Lab - English Master</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css"> 
+    <style>
+        /* CSS KHUSUS WRITING LAB */
+        .lab-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            width: 40px; height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-back:hover {
+            background: var(--accent-blue);
+            transform: translateX(-5px);
+        }
+
+        .control-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .select-custom {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            outline: none;
+            cursor: pointer;
+            appearance: none;
+        }
+
+        .select-custom:focus {
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
+        }
+
+        .workspace-card {
+            border-top: 4px solid var(--accent-purple);
+        }
+
+        .prompt-box {
+            background: rgba(139, 92, 246, 0.1);
+            border-left: 4px solid var(--accent-purple);
+            padding: 16px;
+            border-radius: 0 12px 12px 0;
+            margin-bottom: 20px;
+        }
+
+        .prompt-box h4 {
+            color: var(--accent-purple);
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .prompt-box p {
+            font-size: 1.05rem;
+            line-height: 1.5;
+        }
+
+        /* Tombol Bantuan Kosa Kata */
+        .hint-btn {
+            background: transparent;
+            color: var(--accent-orange);
+            border: 1px dashed var(--accent-orange);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .hint-btn:hover {
+            background: rgba(249, 115, 22, 0.1);
+        }
+
+        .hint-content {
+            display: none;
+            background: rgba(249, 115, 22, 0.05);
+            border: 1px solid rgba(249, 115, 22, 0.2);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .vocab-badge {
+            background: rgba(249, 115, 22, 0.15);
+            color: #fdba74;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Area Mengetik */
+        .editor-area {
+            width: 100%;
+            min-height: 200px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            line-height: 1.6;
+            resize: vertical;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .editor-area:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+        }
+
+        /* Tombol Submit */
+        .btn-analyze {
+            width: 100%;
+            background: linear-gradient(135deg, #8b5cf6, #d946ef);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px -5px rgba(139, 92, 246, 0.4);
+        }
+
+        .btn-analyze:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px -5px rgba(139, 92, 246, 0.6);
+        }
+
+        /* Panel Feedback AI */
+        .feedback-panel {
+            display: none;
+            margin-top: 30px;
+            border-top: 4px solid var(--accent-green);
+        }
+
+        .score-circle {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            background: rgba(16, 185, 129, 0.1);
+            border: 4px solid var(--accent-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--accent-green);
+            margin: 0 auto 20px auto;
+        }
+
+        .feedback-box {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 15px;
+        }
+
+        .feedback-box h5 {
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-wrapper">
+        
+        <div class="lab-header">
+            <a href="index.html" class="btn-back"><i class="fa-solid fa-arrow-left"></i></a>
+            <div class="brand-logo" style="margin-bottom: 0;">
+                 <i class="fa-solid fa-wand-magic-sparkles neon-icon" style="background: linear-gradient(135deg, #8b5cf6, #d946ef); -webkit-background-clip: text; background-clip: text; color: transparent;"></i>
+                 <span class="neon-text" style="background: linear-gradient(to right, #e0c3fc, #8ec5fc); -webkit-background-clip: text; background-clip: text; color: transparent;">AI Writing Lab</span>
+            </div>
+            
+            <div style="margin-left: auto; display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.05); padding: 8px 16px; border-radius: 50px;">
+                <img src="" id="navAvatar" alt="Avatar" style="width: 30px; height: 30px; border-radius: 50%;">
+                <span id="navName" style="font-weight: 700; font-size: 0.9rem;">User</span>
+                <div style="background: #fbbf24; color: #000; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem; font-weight: 800;"><i class="fa-solid fa-bolt"></i> <span id="navXp">0</span></div>
+            </div>
+        </div>
+
+        <div class="control-panel">
+            <select id="modeSelector" class="select-custom">
+                <option value="free">📝 Free Writing (Menulis Bebas)</option>
+                <option value="fill">🧩 Fill in the Blanks (Melengkapi)</option>
+                <option value="translate">🌐 Translate (Menerjemahkan)</option>
+                <option value="grammar">✍️ Grammar Check (Koreksi)</option>
+            </select>
+            <select id="levelSelector" class="select-custom">
+                <option value="beginner">🟢 Pemula (A1-A2)</option>
+                <option value="intermediate">🟡 Menengah (B1-B2)</option>
+                <option value="advanced">🔴 Mahir (C1-C2)</option>
+            </select>
+        </div>
+
+        <div class="premium-card workspace-card">
+            <div class="prompt-box">
+                <h4>Instruksi Tugas:</h4>
+                <p id="taskPrompt">Memuat tugas...</p>
+            </div>
+
+            <button id="btnHint" class="hint-btn">
+                <i class="fa-solid fa-lightbulb"></i> Tampilkan Bantuan Kosa Kata
+            </button>
+            <div id="hintContent" class="hint-content"></div>
+
+            <textarea id="userEditor" class="editor-area" placeholder="Mulai mengetik bahasa Inggrismu di sini..."></textarea>
+
+            <button id="btnAnalyze" class="btn-analyze">
+                <i class="fa-solid fa-robot"></i> Analisis Tulisan dengan AI
+            </button>
+        </div>
+
+        <div id="feedbackPanel" class="premium-card feedback-panel">
+            <h3 style="text-align: center; margin-bottom: 20px;">Hasil Analisis AI</h3>
+            
+            <div class="score-circle" id="aiScore">0</div>
+            <p style="text-align: center; color: var(--accent-green); font-weight: 700; margin-bottom: 25px;">XP +<span id="earnedXp">0</span> Didapatkan!</p>
+
+            <div class="feedback-box">
+                <h5><i class="fa-solid fa-circle-check" style="color: var(--accent-green);"></i> Kelebihan Tulisanmu</h5>
+                <p id="aiPraise" style="font-size: 0.95rem;">-</p>
+            </div>
+
+            <div class="feedback-box">
+                <h5><i class="fa-solid fa-triangle-exclamation" style="color: var(--accent-orange);"></i> Area Perbaikan (Grammar/Kosakata)</h5>
+                <p id="aiCritique" style="font-size: 0.95rem; color: #cbd5e1;">-</p>
+            </div>
+            
+            <button class="btn-submit" style="margin-top: 20px; background: rgba(255,255,255,0.1); width: 100%; border: 1px solid rgba(255,255,255,0.2); padding: 12px; border-radius: 12px; color: white; font-weight: 700; cursor: pointer;">Acak Latihan Baru</button>
+        </div>
+
+    </div>
+
+    <!-- SCRIPT UTAMA - DENGAN LOGIKA DETEKSI KATA KUNCI & PENGACAK ANTI-REPETISI -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Load Data User ke Header
+            const savedName = localStorage.getItem('em_username') || 'Siswa';
+            const savedAvatar = localStorage.getItem('em_avatar') || 'https://api.dicebear.com/7.x/adventurer/svg?seed=Felix';
+            const savedXp = localStorage.getItem('em_xp') || '0';
+            
+            document.getElementById('navName').textContent = savedName;
+            document.getElementById('navAvatar').src = savedAvatar;
+            document.getElementById('navXp').textContent = savedXp;
+
+            // 2. Database Tugas (4 Mode x 3 Level x 7 Tugas = 84 Tugas)
+            const taskDatabase = {
+                free: {
+                    beginner: [
+                        { prompt: "Tulis 3 kalimat tentang makanan kesukaanmu.", vocab: ["Delicious", "Sweet", "Spicy", "Eat", "Breakfast"] },
+                        { prompt: "Ceritakan tentang hewan peliharaan atau hewan favoritmu.", vocab: ["Cute", "Animal", "Play", "Sleep", "Love"] },
+                        { prompt: "Apa yang biasa kamu lakukan di akhir pekan?", vocab: ["Weekend", "Relax", "Watch", "Friend", "Happy"] },
+                        { prompt: "Deskripsikan anggota keluargamu dalam 3 kalimat.", vocab: ["Family", "Mother", "Father", "Brother", "Kind"] },
+                        { prompt: "Tulis tentang warna kesukaanmu dan alasannya.", vocab: ["Color", "Bright", "Dark", "Because", "Beautiful"] },
+                        { prompt: "Ceritakan tentang tempat tinggal atau kamarmu.", vocab: ["Room", "Clean", "Bed", "Window", "Small"] },
+                        { prompt: "Apa hobimu dan mengapa kamu menyukainya?", vocab: ["Hobby", "Read", "Play", "Fun", "Time"] }
+                    ],
+                    intermediate: [
+                        { prompt: "Tulis paragraf singkat tentang pengalaman liburan terbaikmu.", vocab: ["Unforgettable", "Scenery", "Journey", "Explore", "Fascinating"] },
+                        { prompt: "Ceritakan tentang film atau buku yang mengubah cara pandangmu.", vocab: ["Inspiring", "Character", "Plot", "Realize", "Perspective"] },
+                        { prompt: "Apa pendapatmu tentang belajar online dibandingkan di kelas?", vocab: ["Convenient", "Focus", "Environment", "Discussion", "Challenging"] },
+                        { prompt: "Deskripsikan pekerjaan impianmu di masa depan.", vocab: ["Career", "Passionate", "Skill", "Achieve", "Opportunity"] },
+                        { prompt: "Ceritakan pengalaman saat kamu berhasil mengatasi sebuah ketakutan.", vocab: ["Nervous", "Overcome", "Brave", "Relieved", "Experience"] },
+                        { prompt: "Tulis tentang pentingnya menjaga kesehatan bagi remaja.", vocab: ["Habit", "Exercise", "Nutrition", "Beneficial", "Lifestyle"] },
+                        { prompt: "Jika kamu bisa pergi ke negara mana saja, ke mana kamu akan pergi dan kenapa?", vocab: ["Culture", "Destination", "Curious", "Famous", "Interact"] }
+                    ],
+                    advanced: [
+                        { prompt: "Tulis opini argumen mengenai dampak kecerdasan buatan (AI) di bidang pendidikan.", vocab: ["Implication", "Paradigm", "Cognitive", "Detrimental", "Unprecedented"] },
+                        { prompt: "Diskusikan pro dan kontra dari kebijakan 'Universal Basic Income'.", vocab: ["Economy", "Poverty", "Incentive", "Allocate", "Sustainable"] },
+                        { prompt: "Analisis dampak media sosial terhadap kesehatan mental generasi Gen-Z.", vocab: ["Psychological", "Validation", "Algorithm", "Anxiety", "Phenomenon"] },
+                        { prompt: "Tulis esai singkat tentang urgensi transisi ke energi terbarukan.", vocab: ["Emission", "Fossil fuels", "Mitigate", "Crucial", "Transition"] },
+                        { prompt: "Evaluasi bagaimana globalisasi memengaruhi budaya lokal di negaramu.", vocab: ["Homogenization", "Heritage", "Preserve", "Influence", "Diversity"] },
+                        { prompt: "Diskusikan etika dari eksplorasi ruang angkasa komersial.", vocab: ["Commercialization", "Ethical", "Resource", "Billionaire", "Consequence"] },
+                        { prompt: "Apa implikasi jangka panjang dari model kerja jarak jauh (remote work)?", vocab: ["Productivity", "Isolation", "Infrastructure", "Adaptation", "Corporate"] }
+                    ]
+                },
+                fill: {
+                    beginner: [
+                        { prompt: "Lengkapi: I ___ (pergi) to the market yesterday and ___ (membeli) some apples.", vocab: ["Went", "Bought"] },
+                        { prompt: "Lengkapi: She ___ (sedang membaca) a book when I ___ (menelepon) her.", vocab: ["Was reading", "Called"] },
+                        { prompt: "Lengkapi: We ___ (selalu) eat dinner at 7 PM ___ (setiap) day.", vocab: ["Always", "Every"] },
+                        { prompt: "Lengkapi: The dog ___ (menggonggong) loudly ___ (tadi malam).", vocab: ["Barked", "Last night"] },
+                        { prompt: "Lengkapi: He ___ (tidak) like to ___ (minum) coffee.", vocab: ["Doesn't", "Drink"] },
+                        { prompt: "Lengkapi: They ___ (bermain) football in the ___ (lapangan) now.", vocab: ["Are playing", "Field"] },
+                        { prompt: "Lengkapi: I ___ (akan) visit my grandmother ___ (besok).", vocab: ["Will", "Tomorrow"] }
+                    ],
+                    intermediate: [
+                        { prompt: "Lengkapi: If I ___ (tahu) you were coming, I would have ___ (memanggang) a cake.", vocab: ["Had known", "Baked"] },
+                        { prompt: "Lengkapi: The project must be ___ (diselesaikan) by Friday, ___ (kalau tidak) we will lose the client.", vocab: ["Completed", "Otherwise"] },
+                        { prompt: "Lengkapi: She has been ___ (bekerja) here ___ (sejak) 2020.", vocab: ["Working", "Since"] },
+                        { prompt: "Lengkapi: You ___ (seharusnya) told me the truth from the ___ (awal).", vocab: ["Should have", "Beginning"] },
+                        { prompt: "Lengkapi: Not only ___ (dia) smart, but she is also very ___ (rendah hati).", vocab: ["Is she", "Humble"] },
+                        { prompt: "Lengkapi: I am looking forward to ___ (bertemu) you ___ (segera).", vocab: ["Meeting", "Soon"] },
+                        { prompt: "Lengkapi: The book, ___ (yang) cover is torn, ___ (milik) to the library.", vocab: ["Whose", "Belongs"] }
+                    ],
+                    advanced: [
+                        { prompt: "Lengkapi: Despite the ___ (keadaan yang meringankan), the jury found him ___ (bersalah).", vocab: ["Extenuating circumstances", "Guilty"] },
+                        { prompt: "Lengkapi: It is imperative that the manager ___ (menghadiri) the meeting ___ (tepat waktu).", vocab: ["Attend", "Promptly"] },
+                        { prompt: "Lengkapi: Scarcely ___ (telah) the plane taken off when the engine ___ (mengalami kerusakan).", vocab: ["Had", "Malfunctioned"] },
+                        { prompt: "Lengkapi: The findings ___ (memperkuat) the theory that the phenomenon is ___ (ada di mana-mana).", vocab: ["Corroborate", "Ubiquitous"] },
+                        { prompt: "Lengkapi: She approached the delicate situation with great ___ (kebijaksanaan), ensuring no one felt ___ (diasingkan).", vocab: ["Tact", "Alienated"] },
+                        { prompt: "Lengkapi: Had they ___ (mengantisipasi) the economic downturn, they would not be on the ___ (ambang) of bankruptcy.", vocab: ["Anticipated", "Verge"] },
+                        { prompt: "Lengkapi: The CEO's speech was full of ___ (retorika), but lacked concrete ___ (rencana tindakan).", vocab: ["Rhetoric", "Actionable plans"] }
+                    ]
+                },
+                translate: {
+                    beginner: [
+                        { prompt: "Terjemahkan: 'Nama saya Budi dan saya suka bermain sepak bola.'", vocab: ["Name", "Like", "Play", "Football"] },
+                        { prompt: "Terjemahkan: 'Kucing itu tidur di atas kursi.'", vocab: ["Cat", "Sleep", "On", "Chair"] },
+                        { prompt: "Terjemahkan: 'Saya bangun jam enam pagi setiap hari.'", vocab: ["Wake up", "Six o'clock", "Morning", "Every day"] },
+                        { prompt: "Terjemahkan: 'Apakah kamu memiliki pensil merah?'", vocab: ["Do you", "Have", "Red", "Pencil"] },
+                        { prompt: "Terjemahkan: 'Hari ini cuacanya sangat panas.'", vocab: ["Today", "Weather", "Very", "Hot"] },
+                        { prompt: "Terjemahkan: 'Mereka tidak pergi ke sekolah kemarin.'", vocab: ["They", "Did not go", "School", "Yesterday"] },
+                        { prompt: "Terjemahkan: 'Tolong buka jendela itu.'", vocab: ["Please", "Open", "Window", "That"] }
+                    ],
+                    intermediate: [
+                        { prompt: "Terjemahkan: 'Meskipun hujan deras, mereka tetap melanjutkan pertandingan.'", vocab: ["Although", "Heavy rain", "Continue", "Match"] },
+                        { prompt: "Terjemahkan: 'Jika kamu belajar lebih giat, kamu akan lulus ujian itu.'", vocab: ["If", "Study harder", "Pass", "Exam"] },
+                        { prompt: "Terjemahkan: 'Saya belum pernah mengunjungi Jepang sebelumnya.'", vocab: ["Have never", "Visited", "Japan", "Before"] },
+                        { prompt: "Terjemahkan: 'Tugas ini harus diselesaikan sebelum hari Jumat.'", vocab: ["Task", "Must be finished", "Before", "Friday"] },
+                        { prompt: "Terjemahkan: 'Dia bertanya padaku di mana stasiun kereta terdekat.'", vocab: ["Asked me", "Where", "Nearest", "Train station"] },
+                        { prompt: "Terjemahkan: 'Orang yang sedang berbicara dengan ayahku adalah guruku.'", vocab: ["Person who", "Talking to", "Father", "Teacher"] },
+                        { prompt: "Terjemahkan: 'Aku lebih suka minum teh daripada kopi di pagi hari.'", vocab: ["Prefer", "Tea", "To coffee", "In the morning"] }
+                    ],
+                    advanced: [
+                        { prompt: "Terjemahkan: 'Kebijakan ekonomi yang baru diterapkan diperkirakan akan menekan laju inflasi.'", vocab: ["Implemented", "Economic policy", "Projected", "Suppress", "Inflation rate"] },
+                        { prompt: "Terjemahkan: 'Tanpa mengesampingkan prestasinya, kita harus mengakui adanya kelemahan sistemik.'", vocab: ["Notwithstanding", "Achievements", "Acknowledge", "Systemic flaws"] },
+                        { prompt: "Terjemahkan: 'Semakin cepat masalah ini diselesaikan, semakin kecil kerugian yang akan kita tanggung.'", vocab: ["The sooner", "Resolved", "The lesser", "Incur"] },
+                        { prompt: "Terjemahkan: 'Duta besar tersebut menyampaikan pidato yang diplomatis namun menyiratkan peringatan keras.'", vocab: ["Ambassador", "Delivered", "Diplomatic speech", "Underlying", "Stern warning"] },
+                        { prompt: "Terjemahkan: 'Laporan ini menggarisbawahi perlunya paradigma baru dalam konservasi lingkungan.'", vocab: ["Underscores", "Necessity", "New paradigm", "Environmental conservation"] },
+                        { prompt: "Terjemahkan: 'Ada perbedaan tipis antara percaya diri dan kesombongan.'", vocab: ["Fine line", "Between", "Confidence", "Arrogance"] },
+                        { prompt: "Terjemahkan: 'Langkah-langkah pencegahan mutlak diperlukan untuk menghindari eskalasi konflik.'", vocab: ["Preventive measures", "Absolutely necessary", "Avoid", "Escalation"] }
+                    ]
+                },
+                grammar: {
+                    beginner: [
+                        { prompt: "Perbaiki kalimat ini: 'She don't likes apple.'", vocab: ["Doesn't", "Like"] },
+                        { prompt: "Perbaiki kalimat ini: 'He play soccer every weekends.'", vocab: ["Plays", "Weekend"] },
+                        { prompt: "Perbaiki kalimat ini: 'I am go to school now.'", vocab: ["Going"] },
+                        { prompt: "Perbaiki kalimat ini: 'There is many cars in the street.'", vocab: ["Are", "Many"] },
+                        { prompt: "Perbaiki kalimat ini: 'My mother cook dinner yesterday.'", vocab: ["Cooked"] },
+                        { prompt: "Perbaiki kalimat ini: 'They wasn't at home last night.'", vocab: ["Weren't"] },
+                        { prompt: "Perbaiki kalimat ini: 'I has two brothers.'", vocab: ["Have"] }
+                    ],
+                    intermediate: [
+                        { prompt: "Perbaiki kalimat ini: 'I have went to Paris two years ago.'", vocab: ["Went", "Have been", "Did go"] },
+                        { prompt: "Perbaiki kalimat ini: 'If I will see him, I will tell him.'", vocab: ["If I see", "Will tell"] },
+                        { prompt: "Perbaiki kalimat ini: 'She asked me what was my name.'", vocab: ["What my name was", "Noun clause"] },
+                        { prompt: "Perbaiki kalimat ini: 'I look forward to hear from you.'", vocab: ["Hearing", "Gerund"] },
+                        { prompt: "Perbaiki kalimat ini: 'Despite of the rain, we played outside.'", vocab: ["Despite", "In spite of"] },
+                        { prompt: "Perbaiki kalimat ini: 'He is taller then his brother.'", vocab: ["Than", "Comparison"] },
+                        { prompt: "Perbaiki kalimat ini: 'I'm used to wake up early.'", vocab: ["Waking up", "Be used to"] }
+                    ],
+                    advanced: [
+                        { prompt: "Perbaiki kalimat ini: 'Not only he arrived late, but he also forgot his presentation slides.'", vocab: ["Did he arrive", "Inversion rule"] },
+                        { prompt: "Perbaiki kalimat ini: 'The company, which it was founded in 1990, is now bankrupt.'", vocab: ["Which was founded", "Relative clause"] },
+                        { prompt: "Perbaiki kalimat ini: 'Walking down the street, the trees were beautiful.'", vocab: ["Dangling modifier", "As I walked"] },
+                        { prompt: "Perbaiki kalimat ini: 'She prefers to read than watching TV.'", vocab: ["Parallel structure", "Reading to watching"] },
+                        { prompt: "Perbaiki kalimat ini: 'Hardly I had finished the test when the bell rang.'", vocab: ["Had I finished", "Inversion"] },
+                        { prompt: "Perbaiki kalimat ini: 'The committee have decided to postpone the event.'", vocab: ["Has decided", "Collective noun"] },
+                        { prompt: "Perbaiki kalimat ini: 'By this time next year, I will finish my degree.'", vocab: ["Will have finished", "Future perfect"] }
+                    ]
+                }
+            };
+
+            // Elemen UI
+            const modeSelector = document.getElementById('modeSelector');
+            const levelSelector = document.getElementById('levelSelector');
+            const taskPrompt = document.getElementById('taskPrompt');
+            const hintContent = document.getElementById('hintContent');
+            const btnHint = document.getElementById('btnHint');
+            const userEditor = document.getElementById('userEditor');
+            const btnAnalyze = document.getElementById('btnAnalyze');
+            const feedbackPanel = document.getElementById('feedbackPanel');
+            const resetBtn = document.querySelector('.btn-submit');
+
+            // Menyimpan state data tugas saat ini secara global scope lokal
+            let activeTask = null;
+            let lastTrackedIndex = -1; // Mencegah duplikasi soal berturut-turut
+
+            // Fungsi Update UI & Pengacak Pintar (Anti-Repetisi)
+            function updateTask() {
+                const mode = modeSelector.value;
+                const level = levelSelector.value;
+                const taskList = taskDatabase[mode][level];
+                
+                let randomIndex;
+                // Lakukan looping acak jika index yang didapat sama dengan index sebelumnya
+                do {
+                    randomIndex = Math.floor(Math.random() * taskList.length);
+                } while (randomIndex === lastTrackedIndex && taskList.length > 1);
+
+                lastTrackedIndex = randomIndex;
+                activeTask = taskList[randomIndex];
+
+                // Render instruksi tugas
+                taskPrompt.textContent = activeTask.prompt;
+                
+                // Render hint vocabulary ke HTML
+                hintContent.innerHTML = '';
+                activeTask.vocab.forEach(word => {
+                    const span = document.createElement('span');
+                    span.className = 'vocab-badge';
+                    span.textContent = word;
+                    hintContent.appendChild(span);
+                });
+
+                // Bersihkan lembar kerja & kembalikan state normal UI
+                hintContent.style.display = 'none';
+                userEditor.value = '';
+                feedbackPanel.style.display = 'none';
+                btnAnalyze.disabled = false;
+                btnAnalyze.innerHTML = '<i class="fa-solid fa-robot"></i> Analisis Tulisan dengan AI';
+            }
+
+            // Pasang event listener untuk reset dinamis
+            if (resetBtn) {
+                resetBtn.addEventListener('click', updateTask);
+            }
+
+            modeSelector.addEventListener('change', updateTask);
+            levelSelector.addEventListener('change', updateTask);
+            
+            btnHint.addEventListener('click', () => {
+                hintContent.style.display = hintContent.style.display === 'flex' ? 'none' : 'flex';
+            });
+
+            // Jalankan inisialisasi pertama kali
+            updateTask();
+
+            // 4. Logika Evaluasi AI Cerdas (Mendeteksi Penggunaan Kosakata)
+            btnAnalyze.addEventListener('click', () => {
+                const userInputText = userEditor.value.trim();
+                
+                if (userInputText.length < 5) {
+                    alert("Teks terlalu pendek! Silakan ketik jawaban yang valid terlebih dahulu.");
+                    return;
+                }
+
+                // Animasi Loading
+                btnAnalyze.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengevaluasi Parameter AI...';
+                btnAnalyze.disabled = true;
+
+                setTimeout(() => {
+                    // Logika Pencocokan Kosakata (Case Insensitive)
+                    let usedVocab = [];
+                    activeTask.vocab.forEach(word => {
+                        // Regex fleksibel untuk mencocokkan kata dasar di dalam teks input user
+                        const regex = new RegExp('\\b' + word.toLowerCase() + '\\b', 'i');
+                        if (regex.test(userInputText.toLowerCase())) {
+                            usedVocab.push(word);
+                        }
+                    });
+
+                    // Rumus kalkulasi skor berdasarkan persentase kosa kata yang berhasil dipakai
+                    const baseScore = Math.floor(Math.random() * 15) + 76; // Skor acak dasar 76-90
+                    const bonusScore = Math.floor((usedVocab.length / activeTask.vocab.length) * 10); // Maksimal bonus +10
+                    const finalScore = Math.min(baseScore + bonusScore, 100); 
+                    const bonusXp = Math.floor(finalScore / 2);
+
+                    // Update UI Nilai Analisis
+                    document.getElementById('aiScore').textContent = finalScore;
+                    document.getElementById('earnedXp').textContent = bonusXp;
+                    
+                    // Rekayasa Template Feedback AI Adaptif sesuai performa teks asli user
+                    const praiseEl = document.getElementById('aiPraise');
+                    const critiqueEl = document.getElementById('aiCritique');
+
+                    if (usedVocab.length === activeTask.vocab.length) {
+                        praiseEl.textContent = `Luar biasa! Struktur kalimatmu rapi dan kamu sukses mengintegrasikan SELURUH kosakata rekomendasi (${usedVocab.join(', ')}).`;
+                        critiqueEl.textContent = "Hampir tidak ditemukan kesalahan struktural yang berarti. Pertahankan performa tulisan seperti ini!";
+                    } else if (usedVocab.length > 0) {
+                        praiseEl.textContent = `Kerja bagus. Pesan tersampaikan dengan baik dan kamu menggunakan kata bantu relevan seperti: ${usedVocab.join(', ')}.`;
+                        
+                        // Cari tahu kata apa saja yang terlewat oleh user
+                        const missedVocab = activeTask.vocab.filter(w => !usedVocab.includes(w));
+                        critiqueEl.textContent = `Perhatikan tenses dasar. Cobalah untuk menyisipkan kosakata ${missedVocab.join(', ')} pada latihan berikutnya untuk hasil yang lebih maksimal.`;
+                    } else {
+                        praiseEl.textContent = "Usaha yang bagus dalam merangkai kalimat inti! Struktur tulisan dasar kamu sudah mulai terbentuk.";
+                        critiqueEl.textContent = `AI mendeteksi kamu belum memanfaatkan panduan kosa kata dasar. Gunakan opsi bantuan kata kunci seperti '${activeTask.vocab.slice(0,2).join('/')}' untuk memperkaya tulisanmu.`;
+                    }
+
+                    // Mutasi & Sinkronisasi skor XP ke Local Storage
+                    let currentXp = parseInt(localStorage.getItem('em_xp')) || 0;
+                    localStorage.setItem('em_xp', currentXp + bonusXp);
+                    document.getElementById('navXp').textContent = currentXp + bonusXp; 
+
+                    // Reveal feedback panel secara smooth
+                    feedbackPanel.style.display = 'block';
+                    btnAnalyze.innerHTML = '<i class="fa-solid fa-check-double"></i> Analisis Selesai';
+                    feedbackPanel.scrollIntoView({ behavior: 'smooth', block: 'end' });
+
+                }, 1500); 
+            });
+        });
+    </script>
+</body>
+</html>

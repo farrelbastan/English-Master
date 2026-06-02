@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Adaptif - English Mastery</title>
+    
+    <!-- Font Modern: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Ikon FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Menghubungkan ke file CSS Pusat -->
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* Gaya Khusus Area Bermain Kuis Gamifikasi */
+        .quiz-wrapper {
+            max-width: 680px;
+            margin: 40px auto;
+            width: 100%;
+        }
+
+        .quiz-header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg, #1e293b);
+            padding: 16px 24px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            border: 2px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .quiz-metric {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .quiz-card-body {
+            background: var(--card-bg, #1e293b);
+            border-radius: 24px;
+            padding: 40px 30px;
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .question-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1.5;
+            color: var(--text-primary, #f8fafc);
+            margin-bottom: 35px;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .quiz-option-btn {
+            background: rgba(15, 23, 42, 0.4);
+            color: var(--text-primary, #f8fafc);
+            border: 2px solid #334155;
+            padding: 16px 20px;
+            border-radius: 16px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .quiz-option-btn:hover:not(:disabled) {
+            border-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.05);
+            transform: translateX(4px);
+        }
+
+        /* Status Jawaban Otomatis Berwarna Cerah */
+        .quiz-option-btn.correct-answer {
+            background: rgba(16, 185, 129, 0.15) !important;
+            border-color: #10b981 !important;
+            color: #10b981 !important;
+        }
+
+        .quiz-option-btn.wrong-answer {
+            background: rgba(239, 68, 68, 0.15) !important;
+            border-color: #ef4444 !important;
+            color: #ef4444 !important;
+        }
+
+        .end-screen-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-wrapper">
+        
+        <div class="quiz-wrapper">
+            
+            <!-- PANEL ATAS: STATUS GAME (NYAWA & SKOR) -->
+            <div class="quiz-header-bar">
+                <div class="quiz-metric" style="color: #ef4444;">
+                    <i class="fa-solid fa-heart-pulse"></i>
+                    <span id="lives-counter">❤️❤️❤️</span>
+                </div>
+                <div class="quiz-metric" style="color: #fbbf24;">
+                    <i class="fa-solid fa-star"></i>
+                    <span id="score-counter">Skor: 0</span>
+                </div>
+            </div>
+
+            <!-- KARTU UTAMA KUIS -->
+            <div class="quiz-card-body">
+                
+                <!-- Kotak Pertanyaan -->
+                <div id="question-area">
+                    <div class="question-text" id="question-text">
+                        Memuat data tantangan kuis...
+                    </div>
+                </div>
+
+                <!-- Pilihan Jawaban -->
+                <div class="options-grid" id="options-container">
+                    <!-- Tombol pilihan akan dibuat dinamis melalui JavaScript di bawah -->
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SCRIPT PROGRAM KUIS INTEGRATIF -->
+    <script>
+        // Bank Data Pertanyaan Adaptif Tingkat Tinggi
+        const quizDatabase = [
+            { 
+                q: "Rarely ____ such a beautifully optimized database architecture design.", 
+                options: ["I have seen", "have I seen", "had I saw", "I saw"], 
+                correct: 1 
+            },
+            { 
+                q: "She requested that the core algorithm ____ simplified for better mobile performance.", 
+                options: ["is", "be", "was", "are"], 
+                correct: 1 
+            },
+            { 
+                q: "The team managed to deploy the system patch, ____ the critical deployment framework bug.", 
+                options: ["despite", "although", "in spite", "however"], 
+                correct: 0 
+            }
+        ];
+
+        let currentIdx = 0;
+        let userScore = 0;
+        let userLives = 3;
+
+        const txtQuestion = document.getElementById('question-text');
+        const containerOptions = document.getElementById('options-container');
+        const displayLives = document.getElementById('lives-counter');
+        const displayScore = document.getElementById('score-counter');
+
+        function renderGameQuestion() {
+            // Cek kondisi selesai atau kalah tamat
+            if (userLives <= 0) return renderEndScreen(false);
+            if (currentIdx >= quizDatabase.length) return renderEndScreen(true);
+
+            // Bersihkan sisa render sebelumnya
+            containerOptions.innerHTML = '';
+            
+            const currentItem = quizDatabase[currentIdx];
+            txtQuestion.innerHTML = `<span style="font-size:0.9rem; color:#3b82f6; display:block; margin-bottom:10px; font-weight:800; text-transform:uppercase;">Tantangan ${currentIdx + 1} dari ${quizDatabase.length}</span>${currentItem.q}`;
+
+            // Generate opsi pilihan ganda
+            currentItem.options.forEach((optionText, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'quiz-option-btn';
+                btn.innerHTML = `<span>${optionText}</span> <i class="fa-regular fa-circle" style="opacity:0.4;"></i>`;
+                
+                // Pasang event klik validasi jawaban
+                btn.onclick = () => processUserAnswer(index, btn);
+                containerOptions.appendChild(btn);
+            });
+        }
+
+        function processUserAnswer(selectedIndex, clickedBtn) {
+            const currentItem = quizDatabase[currentIdx];
+            const allOptionBtns = document.querySelectorAll('.quiz-option-btn');
+
+            // Kunci semua tombol agar tidak bisa klik berulang-ulang
+            allOptionBtns.forEach(btn => btn.disabled = true);
+
+            // Cek kebenaran indeks pilihan
+            if (selectedIndex === currentItem.correct) {
+                clickedBtn.classList.add('correct-answer');
+                clickedBtn.querySelector('i').className = 'fa-solid fa-circle-check';
+                userScore += 10;
+                displayScore.innerText = `Skor: ${userScore}`;
+                
+                // Tambah XP global di LocalStorage (Sinkron dengan Dashboard)
+                let currentXP = parseInt(localStorage.getItem('em_xp')) || 345;
+                localStorage.setItem('em_xp', currentXP + 10);
+            } else {
+                clickedBtn.classList.add('wrong-answer');
+                clickedBtn.querySelector('i').className = 'fa-solid fa-circle-xmark';
+                
+                // Beri tanda warna hijau pada jawaban yang seharusnya benar
+                allOptionBtns[currentItem.correct].classList.add('correct-answer');
+                allOptionBtns[currentItem.correct].querySelector('i').className = 'fa-solid fa-circle-check';
+                
+                userLives--;
+                updateHeartDisplay();
+            }
+
+            // Jeda 1.8 detik sebelum berpindah ke soal selanjutnya agar efek visual terlihat
+            setTimeout(() => {
+                currentIdx++;
+                renderGameQuestion();
+            }, 1800);
+        }
+
+        function updateHeartDisplay() {
+            displayLives.innerText = '❤️'.repeat(userLives) + '🖤'.repeat(3 - userLives);
+        }
+
+        function renderEndScreen(isWin) {
+            containerOptions.innerHTML = '';
+            
+            if (isWin) {
+                txtQuestion.innerHTML = `
+                    <div class="end-screen-icon" style="color: #10b981;"><i class="fa-solid fa-trophy"></i></div>
+                    <h2 style="color: #10b981; margin-bottom:10px;">Luar Biasa, Explorer!</h2>
+                    <p style="color: var(--text-secondary); margin-bottom:20px;">Kamu berhasil menyelesaikan semua tantangan kuis dengan sisa nyawa yang aman.</p>
+                    <div style="font-size:1.3rem; font-weight:800; color:#fbbf24; margin-bottom:30px;">+${userScore} Total Skor Akumulasi</div>
+                `;
+            } else {
+                txtQuestion.innerHTML = `
+                    <div class="end-screen-icon" style="color: #ef4444;"><i class="fa-solid fa-skull-crossbones"></i></div>
+                    <h2 style="color: #ef4444; margin-bottom:10px;">Kehabisan Nyawa!</h2>
+                    <p style="color: var(--text-secondary); margin-bottom:30px;">Jangan berkecil hati. Pelajari kembali materi struktural di Study Mode dan coba lagi.</p>
+                `;
+            }
+
+            // Tombol penutup kembali pulang ke halaman utama
+            const btnHome = document.createElement('button');
+            btnHome.className = 'btn-submit-login';
+            btnHome.style.width = 'auto';
+            btnHome.style.margin = '0 auto';
+            btnHome.style.padding = '14px 28px';
+            btnHome.innerHTML = `<i class="fa-solid fa-house"></i> Kembali ke Dashboard`;
+            btnHome.onclick = () => window.location.href = 'index.html';
+            containerOptions.appendChild(btnHome);
+        }
+
+        // Jalankan kuis pertama kali saat halaman dibuka
+        renderGameQuestion();
+    </script>
+</body>
+</html>

@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masuk - English Master</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Reset & Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body.login-wrapper {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #0f172a;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.15) 0px, transparent 50%);
+            color: #f8fafc;
+            padding: 20px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 440px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Branding Neon */
+        .brand-banner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+        }
+
+        .neon-icon {
+            background: linear-gradient(135deg, #00f2fe, #4facfe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 12px rgba(0, 242, 254, 0.8));
+        }
+
+        .neon-text {
+            font-weight: 800;
+            background: linear-gradient(to right, #e0c3fc, #8ec5fc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-subtitle {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 6px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Kartu Login Ultra-Glassmorphism */
+        .login-card {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px 35px;
+            width: 100%;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #ffffff;
+        }
+
+        .login-header p {
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+
+        /* Input Form Premium */
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #94a3b8;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        .form-input {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 16px 16px 45px;
+            border-radius: 14px;
+            color: #ffffff;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background: rgba(15, 23, 42, 0.9);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+        }
+
+        .form-input:focus + i {
+            color: #3b82f6;
+        }
+
+        /* Avatar Picker Interactive */
+        .avatar-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .avatar-option {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            background: #1e293b;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .avatar-option img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .avatar-option:hover {
+            transform: translateY(-4px);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .avatar-option.selected {
+            border-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.15);
+            box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.4);
+            transform: scale(1.08);
+        }
+
+        .custom-option {
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            background: transparent;
+        }
+        
+        .custom-option i {
+            font-size: 1.25rem;
+            color: #94a3b8;
+            transition: color 0.3s;
+        }
+
+        .custom-option:hover i, .custom-option.selected i {
+            color: #60a5fa;
+        }
+        
+        .custom-option.selected {
+            border-style: solid;
+        }
+
+        /* Styling Modal Kamera */
+        .camera-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .camera-modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #1e293b;
+            border: 1px solid #334155;
+            padding: 24px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 440px;
+            text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content h3 {
+            color: #f8fafc;
+            margin-bottom: 16px;
+        }
+
+        .video-container {
+            width: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 50%; 
+            overflow: hidden;
+            background: #0f172a;
+            border: 4px solid #334155;
+            margin: 0 auto 20px auto;
+        }
+
+        #webcam {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .capture-btn {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .capture-btn:hover { background: #2563eb; }
+
+        .cancel-btn {
+            background: #334155;
+            color: #94a3b8;
+        }
+
+        .cancel-btn:hover { background: #475569; color: white; }
+
+        /* Tombol Submit Modern */
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 14px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.5);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px -5px rgba(59, 130, 246, 0.6);
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+        }
+    </style>
+</head>
+<body class="login-wrapper">
+
+    <div class="login-container">
+        <div class="brand-banner">
+            <div class="brand-logo">
+                <i class="fa-solid fa-graduation-cap neon-icon"></i>
+                <span class="neon-text">English Master</span>
+            </div>
+            <div class="brand-subtitle">Interactive Learning</div>
+        </div>
+
+        <div class="login-card">
+            <div class="login-header">
+                <h2>Selamat Datang</h2>
+                <p>Tentukan identitas belajarmu hari ini.</p>
+            </div>
+
+            <form id="loginForm" action="index.html">
+                <div class="form-group">
+                    <label class="form-label" for="username">Nama Pengguna</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="username" class="form-input" placeholder="Ketik namamu di sini..." required autocomplete="off">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Pilih Avatar</label>
+                    <div class="avatar-grid">
+                        
+                        <div class="avatar-option selected" data-type="preset">
+                            <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Felix" alt="Avatar 1">
+                        </div>
+                        
+                        <div class="avatar-option" data-type="preset">
+                            <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Aneka" alt="Avatar 2">
+                        </div>
+                        
+                        <div class="avatar-option custom-option" id="btn-upload-file" title="Unggah Foto dari Perangkat">
+                            <i class="fa-solid fa-image"></i>
+                            <input type="file" id="avatar-file-input" accept="image/*" style="display: none;">
+                        </div>
+
+                        <div class="avatar-option custom-option" id="btn-open-camera" title="Ambil Foto lewat Kamera">
+                            <i class="fa-solid fa-camera"></i>
+                        </div>
+
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    Mulai Belajar <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="camera-modal" class="camera-modal">
+        <div class="modal-content">
+            <h3>Ambil Foto Avatar</h3>
+            <div class="video-container">
+                <video id="webcam" autoplay playsinline></video>
+            </div>
+            <div class="modal-actions">
+                <button id="btn-capture" class="action-btn capture-btn">
+                    <i class="fa-solid fa-camera-retro"></i> Ambil
+                </button>
+                <button id="btn-close-camera" class="action-btn cancel-btn">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Inisialisasi Elemen
+            const avatarOptions = document.querySelectorAll('.avatar-option[data-type="preset"]');
+            const btnUploadFile = document.getElementById('btn-upload-file');
+            const avatarFileInput = document.getElementById('avatar-file-input');
+            const btnOpenCamera = document.getElementById('btn-open-camera');
+            
+            const cameraModal = document.getElementById('camera-modal');
+            const webcam = document.getElementById('webcam');
+            const btnCapture = document.getElementById('btn-capture');
+            const btnCloseCamera = document.getElementById('btn-close-camera');
+            
+            const formLogin = document.getElementById('loginForm');
+            const usernameInput = document.getElementById('username');
+
+            // Set Avatar awal
+            let selectedAvatarData = "https://api.dicebear.com/7.x/adventurer/svg?seed=Felix"; 
+            let localStream = null;
+
+            function clearSelection() {
+                document.querySelectorAll('.avatar-option').forEach(opt => opt.classList.remove('selected'));
+            }
+
+            // 2. Klik Avatar Bawaan
+            avatarOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    clearSelection();
+                    option.classList.add('selected');
+                    selectedAvatarData = option.querySelector('img').src;
+                });
+            });
+
+            // 3. Logika Unggah File
+            btnUploadFile.addEventListener('click', (e) => {
+                if(e.target !== avatarFileInput) {
+                    avatarFileInput.click();
+                }
+            });
+
+            avatarFileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        selectedAvatarData = event.target.result; 
+                        
+                        clearSelection();
+                        btnUploadFile.classList.add('selected');
+                        btnUploadFile.innerHTML = `<img src="${selectedAvatarData}"> <input type="file" id="avatar-file-input" accept="image/*" style="display: none;">`;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // 4. Logika Kamera Web
+            btnOpenCamera.addEventListener('click', async () => {
+                try {
+                    localStream = await navigator.mediaDevices.getUserMedia({ 
+                        video: { facingMode: "user", width: { ideal: 480 }, height: { ideal: 480 } }, 
+                        audio: false 
+                    });
+                    webcam.srcObject = localStream;
+                    cameraModal.classList.add('active'); 
+                } catch (err) {
+                    alert("Gagal mengakses kamera. Pastikan kamu memberi izin pada browser.");
+                    console.error(err);
+                }
+            });
+
+            btnCapture.addEventListener('click', () => {
+                const canvas = document.createElement('canvas');
+                const size = Math.min(webcam.videoWidth, webcam.videoHeight);
+                canvas.width = size;
+                canvas.height = size;
+                
+                const ctx = canvas.getContext('2d');
+                ctx.translate(canvas.width, 0);
+                ctx.scale(-1, 1);
+                
+                const startX = (webcam.videoWidth - size) / 2;
+                const startY = (webcam.videoHeight - size) / 2;
+                ctx.drawImage(webcam, startX, startY, size, size, 0, 0, size, size);
+                
+                selectedAvatarData = canvas.toDataURL('image/jpeg');
+                
+                clearSelection();
+                btnOpenCamera.classList.add('selected');
+                btnOpenCamera.innerHTML = `<img src="${selectedAvatarData}">`;
+                
+                stopCamera();
+            });
+
+            btnCloseCamera.addEventListener('click', stopCamera);
+
+            function stopCamera() {
+                if (localStream) {
+                    localStream.getTracks().forEach(track => track.stop());
+                }
+                cameraModal.classList.remove('active');
+            }
+
+            // 5. Submit Form -> Simpan ke Local Storage & Reset Data Gamifikasi
+            formLogin.addEventListener('submit', function(event) {
+                event.preventDefault(); 
+                
+                const username = usernameInput.value.trim();
+                
+                if(username) {
+                    // Simpan identitas
+                    localStorage.setItem('em_logged_in', 'true');
+                    localStorage.setItem('em_username', username);
+                    localStorage.setItem('em_avatar', selectedAvatarData);
+                    
+                    // --- RESET PAKSA SELURUH DATA GAME SAAT LOGIN BARU ---
+                    localStorage.setItem('em_xp', '0');
+                    localStorage.setItem('em_streak', '1');
+                    
+                    // Reset timer harian & XP harian
+                    localStorage.setItem('em_focus_seconds', '0');
+                    localStorage.setItem('em_today_xp', '0');
+                    
+                    // 👇 MEMBUANG TIMESTAMP LAMA AGAR TIMER MULAI DARI 0 👇
+                    localStorage.removeItem('em_start_time');
+                    // 👆 ================================================= 👆
+                    
+                    // Pindah ke halaman utama
+                    window.location.href = 'index.html';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

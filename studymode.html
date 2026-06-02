@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep-Dive Study Mode - English Mastery</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* Gaya Tata Letak Premium Khusus untuk Halaman Study Mode */
+        .study-layout {
+            display: flex;
+            gap: 30px;
+            margin-top: 25px;
+            align-items: flex-start;
+        }
+
+        /* Sisi Kiri: Sidebar Daftar Materi */
+        .study-sidebar {
+            flex: 0 0 320px;
+            position: sticky;
+            top: 20px;
+            background: var(--card-bg, #1e293b);
+            border-radius: 20px;
+            padding: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+        }
+
+        .sidebar-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 15px;
+            color: #3b82f6;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .topic-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .topic-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.4);
+            color: var(--text-secondary, #94a3b8);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .topic-item i {
+            font-size: 1.1rem;
+        }
+
+        .topic-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+            transform: translateX(3px);
+        }
+
+        .topic-item.active {
+            background: #3b82f6;
+            color: #ffffff;
+            border-color: #3b82f6;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Sisi Kanan: Panel Isi Bacaan Materi */
+        .study-content-panel {
+            flex: 1;
+            background: var(--card-bg, #1e293b);
+            border-radius: 24px;
+            padding: 40px;
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            min-height: 500px;
+        }
+
+        .content-header {
+            border-bottom: 2px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+        }
+
+        .content-header .badge {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .content-header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--text-primary, #f8fafc);
+        }
+
+        .rich-text {
+            color: var(--text-secondary, #94a3b8);
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        .rich-text h3 {
+            color: var(--text-primary, #f8fafc);
+            margin: 25px 0 10px 0;
+            font-size: 1.4rem;
+        }
+
+        .example-box {
+            background: rgba(15, 23, 42, 0.6);
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            border-radius: 0 12px 12px 0;
+            margin: 20px 0;
+        }
+
+        .example-box strong {
+            color: #3b82f6;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .action-footer-panel {
+            margin-top: 40px;
+            border-top: 2px solid rgba(255, 255, 255, 0.05);
+            padding-top: 25px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* RESPONSIVE BREAKPOINT (Untuk Tablet & HP) */
+        @media (max-width: 992px) {
+            .study-layout {
+                flex-direction: column;
+            }
+            .study-sidebar {
+                flex: none;
+                width: 100%;
+                position: static;
+                max-height: none;
+            }
+            .study-content-panel {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-wrapper">
+        
+        <header class="main-header" style="padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <a href="index.html" class="footer-btn" style="padding: 10px 15px; text-decoration: none; font-size: 0.9rem;">
+                    <i class="fa-solid fa-house-user"></i> Kembali ke Beranda
+                </a>
+                <div>
+                    <span style="font-size: 0.85rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Kurikulum CEFR</span>
+                    <h2 style="margin: 0; font-size: 1.4rem; font-weight: 800;">Deep-Dive Study Mode</h2>
+                </div>
+            </div>
+        </header>
+
+        <div class="study-layout">
+            
+            <aside class="study-sidebar">
+                <div class="sidebar-title">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span>Daftar Materi</span>
+                </div>
+                <nav class="topic-list">
+                    <div class="topic-item active">
+                        <i class="fa-solid fa-circle-play"></i>
+                        <span>1. Stative Verbs Deep Dive</span>
+                    </div>
+                    <div class="topic-item" onclick="alert('Bab terkunci! Selesaikan materi 1 terlebih dahulu.')">
+                        <i class="fa-solid fa-lock"></i>
+                        <span>2. Advanced Sentence Inversion</span>
+                    </div>
+                    <div class="topic-item" onclick="alert('Bab terkunci! Selesaikan materi 1 terlebih dahulu.')">
+                        <i class="fa-solid fa-lock"></i>
+                        <span>3. Structural Idioms in Essay</span>
+                    </div>
+                    <div class="topic-item" onclick="alert('Bab terkunci! Selesaikan materi 1 terlebih dahulu.')">
+                        <i class="fa-solid fa-lock"></i>
+                        <span>4. Subjunctive Mood Logic</span>
+                    </div>
+                </nav>
+            </aside>
+
+            <main class="study-content-panel">
+                
+                <div class="content-header">
+                    <span class="badge">Topik Terbuka &bull; Tingkat C1 Advanced</span>
+                    <h1>Stative Verbs Deep-Dive Architecture</h1>
+                </div>
+
+                <article class="rich-text">
+                    <p>
+                        Secara mendasar, **Stative Verbs** adalah kata kerja dalam bahasa Inggris yang digunakan untuk mengekspresikan suatu keadaan (*state*), kondisi, perasaan, atau kepemilikan, alih-alih suatu tindakan fisik (*action*). Karena sifatnya yang statis, kata kerja jenis ini **secara umum tidak diizinkan** menggunakan format continuous (*-ing*).
+                    </p>
+
+                    <h3>1. Aturan Emas (The Golden Rule)</h3>
+                    <p>
+                        Jangan pernah menggunakan stative verbs dalam bentuk progressive (*Am/Is/Are + Verb-ing*) jika makna yang dirujuk murni merupakan keadaan pikiran atau kepemilikan konseptual.
+                    </p>
+
+                    <div class="example-box">
+                        <strong>❌ Contoh Salah:</strong>
+                        <p style="margin: 0; font-style: italic; color: #ef4444;">"I am knowing the answer to this complex framework integration."</p>
+                        <strong style="margin-top: 10px;">✅ Contoh Benar:</strong>
+                        <p style="margin: 0; font-style: italic; color: #10b981;">"I know the answer to this complex framework integration."</p>
+                    </div>
+
+                    <h3>2. Kasus Perubahan Makna (Dynamic Shift)</h3>
+                    <p>
+                        Beberapa kata kerja dapat berubah status dari *Stative* menjadi *Dynamic* (Aksi) tergantung pada konteks makna kalimat yang ingin disampaikan oleh pembicara. Contoh paling populer adalah kata kerja **"Think"** dan **"Have"**.
+                    </p>
+
+                    <div class="example-box" style="border-left-color: #fbbf24;">
+                        <strong>🧠 Kasus Khusus (Kata "Think"):</strong>
+                        <p style="margin-bottom: 8px;">&bull; <strong>Sebagai Stative (Opini Tetap):</strong> <em>"I think you are a brilliant engineer."</em> (Saya beropini/percaya).</p>
+                        <p style="margin: 0;">&bull; <strong>Sebagai Dynamic (Proses Berpikir saat Ini):</strong> <em>"I am thinking about upgrading our CSS architecture right now."</em> (Otak saya sedang aktif memikirkan hal itu).</p>
+                    </div>
+                </article>
+
+                <div class="action-footer-panel">
+                    <button class="footer-btn" style="opacity: 0.5; cursor: not-allowed;" disabled>
+                        <i class="fa-solid fa-arrow-left"></i> Bab Sebelumnya
+                    </button>
+                    <button class="footer-btn" style="background: #10b981; color: white;" onclick="window.location.href='quiz.html'">
+                        Selesai Belajar & Uji Kuis <i class="fa-solid fa-graduation-cap"></i>
+                    </button>
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
